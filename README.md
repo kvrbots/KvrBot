@@ -52,7 +52,8 @@
 ## Deploy
 You can deploy this bot anywhere.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)</br>
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kvrbots/KvrBot.git)
+
 
 <details><summary>Deploy To VPS</summary>
 <p>
