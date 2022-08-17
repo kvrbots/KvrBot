@@ -20,106 +20,71 @@ def time_to_seconds(time):
     stringt = str(time)
     return sum(int(x) * 60 ** i for i, x in enumerate(reversed(stringt.split(':'))))
 
-@Client.on_message(filters.command(["song"]) & ~filters.channel & ~filters.edited)
-def a(update, message):
+@Client.on_message(filters.command('song') & ~filters.private & ~filters.channel)
+def song(client, message):
+
+    user_id = message.from_user.id 
+    user_name = message.from_user.first_name 
+    rpk = "["+user_name+"](tg://user?id="+str(user_id)+")"
+
     query = ''
     for i in message.command[1:]:
         query += ' ' + str(i)
     print(query)
-    m = message.reply("**🎵 Processing**")
-    ydl_opts = {
-        "format": "bestaudio",
-        "key": "FFmpegMetadata",
-        "prefer_ffmpeg": True,
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "320",
-            }
-        ],
-        "outtmpl": "downloads/%(track)s.mp3" ,
-    }
+    m = message.reply("**ѕєαrchíng чσur ѕσng...!**")
+    ydl_opts = {"format": "bestaudio[ext=m4a]"}
     try:
-        results = []
-        count = 0
-        while len(results) == 0 and count < 6:
-            if count>0:
-                time.sleep(1)
-            results = YoutubeSearch(query, max_results=1).to_dict()
-            count += 1
-        # results = YoutubeSearch(query, max_results=1).to_dict()
-        try:
-            link = f"https://youtube.com{results[0]['url_suffix']}"
-            # print(results)
-            title = results[0]["title"]
-            thumbnail = results[0]["thumbnails"][0]
-            duration = results[0]["duration"]
-            views = results[0]["views"]
+        results = YoutubeSearch(query, max_results=1).to_dict()
+        link = f"https://youtube.com{results[0]['url_suffix']}"
+        #print(results)
+        title = results[0]["title"][:40]       
+        thumbnail = results[0]["thumbnails"][0]
+        thumb_name = f'thumb{title}.jpg'
+        thumb = requests.get(thumbnail, allow_redirects=True)
+        open(thumb_name, 'wb').write(thumb.content)
 
-            if time_to_seconds(duration) >= 1800:  # duration limit
-                 m.edit("Exceeded 30mins cap")
-                 return
 
-            performer = f"[Anything]" 
-            thumb_name = f'thumb{message.message_id}.jpg'
-            thumb = requests.get(thumbnail, allow_redirects=True) 
-            open(thumb_name, 'wb').write(thumb.content)
+        performer = f"[M-FILES]" 
+        duration = results[0]["duration"]
+        url_suffix = results[0]["url_suffix"]
+        views = results[0]["views"]
 
-        except Exception as e:
-            print(e)
-            m.edit("Server busy due to overload, Please try again later.")
-            return
     except Exception as e:
-        m.edit("Use a valid command , /song song name")
+        m.edit(
+            "**𝙵𝙾𝚄𝙽𝙳 𝙽𝙾𝚃𝙷𝙸𝙽𝙶 𝙿𝙻𝙴𝙰𝚂𝙴 𝙲𝙾𝚁𝚁𝙴𝙲𝚃 𝚃𝙷𝙴 𝚂𝙿𝙴𝙻𝙻𝙸𝙽𝙶 𝙾𝚁 𝚂𝙴𝙰𝚁𝙲𝙷 𝙰𝙽𝚈 𝙾𝚃𝙷𝙴𝚁 𝚂𝙾𝙽𝙶**"
+        )
         print(str(e))
         return
-    m.edit("**⬆️ Uploading**")
+    m.edit("𝒟𝒪𝒲𝒩𝐿𝒪𝒜𝒟𝐼𝒩𝒢 𝒴𝒪𝒰𝑅 𝒮𝒪𝒩𝒢...!")
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(link, download=False)
-            audio_file = ydl.prepare_filename(info_dict) 
+            audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
-        rep = f"""
-♬ <b>Title : {title}</b>
-♬ <b>Duration : {duration}</b>
-♬ <b>Link : <a href='{link}'>Click here</a></b>
-♬ <b>Requested By : {message.from_user.mention}</b>
-        """
+        rep = '**GROUPS ›› [MUSIC GROUP](https://youtube.com/channel/UCf_dVNrilcT0V2R--HbYpMA)**\n**DEVELOPER ›› [MIRSHAD](https://t.me/faisalkvr)**'
         secmul, dur, dur_arr = 1, 0, duration.split(':')
         for i in range(len(dur_arr)-1, -1, -1):
             dur += (int(dur_arr[i]) * secmul)
             secmul *= 60
-        message.reply_audio(
-        audio_file,
-        caption=rep,
-        parse_mode='HTML',
-        quote=False,
-        title=title,
-        duration=dur,
-        performer=performer,
-        thumb=thumb_name,
-        reply_to_message_id=message.message_id
-        )
+        message.reply_audio(audio_file, caption=rep, parse_mode='md',quote=False, title=title, duration=dur, performer=performer, thumb=thumb_name)
         m.delete()
     except Exception as e:
-        m.edit(
-          text='There is an error while processing your request.')  
+        m.edit("**🚫 𝙴𝚁𝚁𝙾𝚁 🚫**")
         print(e)
-    try: 
+
+    try:
         os.remove(audio_file)
         os.remove(thumb_name)
     except Exception as e:
         print(e)
-        
-@Client.on_callback_query(filters.regex(r'verify\(.+\)'))
-async def verify():
-    id = int(re.findall(r'verify\(.+\)', update.data))
-    if id!=update.from_user.id:
-         update.answer("Sorry, I'm afraid that this button is not for you", show_alert=True)
-    else: 
-         update.answer("Please use the proper format for request a song", show_alert=True)
-      
-    
+
+def get_text(message: Message) -> [None,str]:
+    text_to_return = message.text
+    if message.text is None:
+        return None
+    if " " not in text_to_return:
+        return None
+    try:
+        return message.text.split(None, 1)[1]
+    except IndexError:
+        return None
