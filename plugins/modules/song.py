@@ -1,26 +1,31 @@
 from __future__ import unicode_literals
-import asyncio
-import re
-import math
+
 import os
-import time
-import ffmpeg
-import aiofiles
+import requests
 import aiohttp
-import wget
-from pyrogram import Client, filters
-from pyrogram.errors import FloodWait, MessageNotModified
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
-from youtubesearchpython import SearchVideos
 import yt_dlp
+import asyncio
+import math
+import time
+
+import wget
+import aiofiles
+
+from pyrogram import filters, Client
+from pyrogram.errors import FloodWait, MessageNotModified
+from pyrogram.types import Message
 from youtube_search import YoutubeSearch
+from youtubesearchpython import SearchVideos
+from yt_dlp import YoutubeDL
+import youtube_dl
 import requests
 
 def time_to_seconds(time):
     stringt = str(time)
     return sum(int(x) * 60 ** i for i, x in enumerate(reversed(stringt.split(':'))))
 
-@Client.on_message(filters.command('song'))
+
+@Client.on_message(filters.command('song') & ~filters.channel)
 def song(client, message):
 
     user_id = message.from_user.id 
@@ -44,7 +49,7 @@ def song(client, message):
         open(thumb_name, 'wb').write(thumb.content)
 
 
-        performer = f"[M-FILES]" 
+        performer = f"[ᒍEOᒪ]" 
         duration = results[0]["duration"]
         url_suffix = results[0]["url_suffix"]
         views = results[0]["views"]
@@ -55,13 +60,13 @@ def song(client, message):
         )
         print(str(e))
         return
-    m.edit("𝒟𝒪𝒲𝒩𝐿𝒪𝒜𝒟𝐼𝒩𝒢 𝒴𝒪𝒰𝑅 𝒮𝒪𝒩𝒢...!")
+    m.edit("**dσwnlσαdíng чσur ѕσng...!**")
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(link, download=False)
             audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
-        rep = '**GROUPS ›› [MUSIC GROUP](https://youtube.com/channel/UCf_dVNrilcT0V2R--HbYpMA)**\n**DEVELOPER ›› [MIRSHAD](https://t.me/faisalkvr)**'
+        rep = '**BY›› [𝘽𝙀𝙏𝘼 Bᴏᴛᴢ](https://t.me/beta_bot_updates)**'
         secmul, dur, dur_arr = 1, 0, duration.split(':')
         for i in range(len(dur_arr)-1, -1, -1):
             dur += (int(dur_arr[i]) * secmul)
@@ -88,3 +93,66 @@ def get_text(message: Message) -> [None,str]:
         return message.text.split(None, 1)[1]
     except IndexError:
         return None
+
+
+@Client.on_message(filters.command(["video", "mp4"]))
+async def vsong(client, message: Message):
+    urlissed = get_text(message)
+
+    pablo = await client.send_message(
+        message.chat.id, f"**𝙵𝙸𝙽𝙳𝙸𝙽𝙶 𝚈𝙾𝚄𝚁 𝚅𝙸𝙳𝙴𝙾** `{urlissed}`"
+    )
+    if not urlissed:
+        await pablo.edit("GIVE ME VALID VIDEO NAME eg:- /video Faded")
+        return
+
+    search = SearchVideos(f"{urlissed}", offset=1, mode="dict", max_results=1)
+    mi = search.result()
+    mio = mi["search_result"]
+    mo = mio[0]["link"]
+    thum = mio[0]["title"]
+    fridayz = mio[0]["id"]
+    mio[0]["channel"]
+    kekme = f"https://img.youtube.com/vi/{fridayz}/hqdefault.jpg"
+    await asyncio.sleep(0.6)
+    url = mo
+    sedlyf = wget.download(kekme)
+    opts = {
+        "format": "best",
+        "addmetadata": True,
+        "key": "FFmpegMetadata",
+        "prefer_ffmpeg": True,
+        "geo_bypass": True,
+        "nocheckcertificate": True,
+        "postprocessors": [{"key": "FFmpegVideoConvertor", "preferedformat": "mp4"}],
+        "outtmpl": "%(id)s.mp4",
+        "logtostderr": False,
+        "quiet": True,
+    }
+    try:
+        with YoutubeDL(opts) as ytdl:
+            ytdl_data = ytdl.extract_info(url, download=True)
+    except Exception as e:
+        await event.edit(event, f"**𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍 𝙵𝚊𝚒𝚕𝚎𝚍 𝙿𝚕𝚎𝚊𝚜𝚎 𝚃𝚛𝚢 𝙰𝚐𝚊𝚒𝚗..♥️** \n**Error :** `{str(e)}`")
+        return
+    c_time = time.time()
+    file_stark = f"{ytdl_data['id']}.mp4"
+    capy = f"""
+**𝚃𝙸𝚃𝙻𝙴 :** [{thum}]({mo})
+**𝚁𝙴𝚀𝚄𝙴𝚂𝚃𝙴𝙳 𝙱𝚈 :** {message.from_user.mention}
+**ᑭOᗯEᖇEᗪ ᗷY : [ᗷETᗩ ᗷOTZ](https://t.me/Beta_Bot_Updates)
+"""
+    await client.send_video(
+        message.chat.id,
+        video=open(file_stark, "rb"),
+        duration=int(ytdl_data["duration"]),
+        file_name=str(ytdl_data["title"]),
+        thumb=sedlyf,
+        caption=capy,
+        supports_streaming=True,        
+        reply_to_message_id=message.message_id 
+    )
+    await pablo.delete()
+    for files in (sedlyf, file_stark):
+        if files and os.path.exists(files):
+            os.remove(files)
