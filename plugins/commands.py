@@ -35,7 +35,7 @@ async def start(client, message: pyrogram.types.Message):
         await asyncio.sleep(1)
         await m.delete()
         await message.reply_chat_action("typing")
-        m=await message.reply_text("ₐₗbₑᵣₜ ₑᵢₙₛₜₑᵢₙ") 
+        m=await message.reply_sticker("CAACAgEAAxkBAAIJPmL8eo1e5_pharC1eJJ4bAq6CLBsAALsAAPLethHe6_Kh1KHbD0eBA") 
         await asyncio.sleep(1)
         await m.delete()          
        
@@ -89,7 +89,7 @@ async def start(client, message: pyrogram.types.Message):
         await asyncio.sleep(1)
         await m.delete()
         await message.reply_chat_action("typing")
-        m=await message.reply_text("ₐₗbₑᵣₜ ₑᵢₙₛₜₑᵢₙ") 
+        m=await message.reply_sticker("CAACAgEAAxkBAAIJPmL8eo1e5_pharC1eJJ4bAq6CLBsAALsAAPLethHe6_Kh1KHbD0eBA") 
         await asyncio.sleep(1)
         await m.delete()          
 
@@ -147,7 +147,7 @@ async def start(client, message: pyrogram.types.Message):
         await asyncio.sleep(1)
         await m.delete()
         await message.reply_chat_action("typing")
-        m=await message.reply_text("ₐₗbₑᵣₜ ₑᵢₙₛₜₑᵢₙ") 
+        m=await message.reply_sticker("CAACAgEAAxkBAAIJPmL8eo1e5_pharC1eJJ4bAq6CLBsAALsAAPLethHe6_Kh1KHbD0eBA") 
         await asyncio.sleep(1)
         await m.delete()          
         
