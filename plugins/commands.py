@@ -30,6 +30,14 @@ async def start(client, message: pyrogram.types.Message):
         InlineKeyboardButton('ᴀʙᴏᴜᴛ', callback_data='about_menu'),
         InlineKeyboardButton('ᴄʟᴏsᴇ', callback_data='close')
     ]]
+        await message.reply_chat_action("typing")
+        m=await message.reply_sticker("CAACAgUAAxkBAAEBB2liJjsNVSkfAy_OtYR0Q48dN_9DsAACGgIAAv68YVTI6jnmvnlZlh4E") 
+        await asyncio.sleep(1)
+        await m.delete()
+        await message.reply_chat_action("typing")
+        m=await message.reply_text("ₐₗbₑᵣₜ ₑᵢₙₛₜₑᵢₙ") 
+        await asyncio.sleep(1)
+        await m.delete()          
        
         reply_markup = InlineKeyboardMarkup(buttons)
         if not START_IMAGE_URL:
@@ -76,6 +84,14 @@ async def start(client, message: pyrogram.types.Message):
         InlineKeyboardButton('ᴀʙᴏᴜᴛ', callback_data='about_menu'),
         InlineKeyboardButton('ᴄʟᴏsᴇ', callback_data='close')
     ]]
+        await message.reply_chat_action("typing")
+        m=await message.reply_sticker("CAACAgUAAxkBAAEBB2liJjsNVSkfAy_OtYR0Q48dN_9DsAACGgIAAv68YVTI6jnmvnlZlh4E") 
+        await asyncio.sleep(1)
+        await m.delete()
+        await message.reply_chat_action("typing")
+        m=await message.reply_text("ₐₗbₑᵣₜ ₑᵢₙₛₜₑᵢₙ") 
+        await asyncio.sleep(1)
+        await m.delete()          
 
         reply_markup = InlineKeyboardMarkup(buttons)
 
@@ -126,6 +142,14 @@ async def start(client, message: pyrogram.types.Message):
         InlineKeyboardButton('ᴀʙᴏᴜᴛ', callback_data='about_menu'),
         InlineKeyboardButton('ᴄʟᴏsᴇ', callback_data='close')
     ]]
+        await message.reply_chat_action("typing")
+        m=await message.reply_sticker("CAACAgUAAxkBAAEBB2liJjsNVSkfAy_OtYR0Q48dN_9DsAACGgIAAv68YVTI6jnmvnlZlh4E") 
+        await asyncio.sleep(1)
+        await m.delete()
+        await message.reply_chat_action("typing")
+        m=await message.reply_text("ₐₗbₑᵣₜ ₑᵢₙₛₜₑᵢₙ") 
+        await asyncio.sleep(1)
+        await m.delete()          
         
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
